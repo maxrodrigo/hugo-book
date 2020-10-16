@@ -8,7 +8,10 @@
 {{- template "_internal/schema.html" . -}}
 {{- template "_internal/twitter_cards.html" . -}}
 
-<title>{{ partial "docs/title" . }} | {{ .Site.Title -}}</title>
+<title>
+{{- partial "docs/title" . }}{{ with .Description }}: {{ title . }}{{ end -}}
+{{ if not .IsHome }} | {{ .Site.Title -}}{{ end -}}
+</title>
 
 {{- $manifest := resources.Get "manifest.json" | resources.ExecuteAsTemplate "manifest.json" . }}
 <link rel="manifest" href="{{ $manifest.RelPermalink }}">
