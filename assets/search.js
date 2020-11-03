@@ -35,7 +35,7 @@
 
   /**
    * @param {String} character
-   * @returns {Boolean} 
+   * @returns {Boolean}
    */
   function isHotkey(character) {
     const dataHotkeys = input.getAttribute('data-hotkeys') || '';
@@ -46,8 +46,8 @@
     input.removeEventListener('focus', init); // init once
     input.required = true;
 
-    loadScript('{{ "flexsearch.min.js" | relURL }}');
-    loadScript('{{ $searchData.RelPermalink }}', function () {
+    loadScript('{{ "flexsearch.min.js" | absURL }}');
+    loadScript('{{ $searchData.Permalink }}', function () {
       input.required = false;
       search();
     });
@@ -76,8 +76,8 @@
   }
 
   /**
-   * @param {String} src 
-   * @param {Function} callback 
+   * @param {String} src
+   * @param {Function} callback
    */
   function loadScript(src, callback) {
     const script = document.createElement('script');
