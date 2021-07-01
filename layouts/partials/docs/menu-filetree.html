@@ -31,15 +31,12 @@
   {{ if .Page.Params.bookCollapseSection }}
     <input type="checkbox" id="section-{{ md5 .Page }}" class="toggle" {{ if or $current $ancestor }}checked{{ end }} />
     <label for="section-{{ md5 .Page }}" class="flex justify-between">
-      <a {{ if .Page.Content }}href="{{ .Page.Permalink }}"{{ end }} class="{{ if $current }}active{{ end }}">
+      <a {{ if .Page.Content }}href="{{ .Page.Permalink }}"{{ else }}role="button"{{ end }} class="{{ if $current }}active{{ end }}">
         {{- with .Page.Params.Menu }}
           {{- . -}}
         {{ else }}
           {{- partial "docs/title" .Page -}}
         {{ end -}}
-      <a {{ if .Page.Content }}href="{{ .Page.Permalink }}"{{ else }}role="button"{{ end }} class="{{ if $current }}active{{ end }}">
-        {{- partial "docs/title" .Page -}}
->>>>>>> c4d69635aff3be7ff54b07b93218d27d0e1ce928
       </a>
     </label>
   {{ else if .Page.Content }}
