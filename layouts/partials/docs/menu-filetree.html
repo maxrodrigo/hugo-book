@@ -37,8 +37,10 @@
         {{ else }}
           {{- partial "docs/title" .Page -}}
         {{ end -}}
+      <a {{ if .Page.Content }}href="{{ .Page.Permalink }}"{{ else }}role="button"{{ end }} class="{{ if $current }}active{{ end }}">
+        {{- partial "docs/title" .Page -}}
+>>>>>>> c4d69635aff3be7ff54b07b93218d27d0e1ce928
       </a>
-      <span>▾</span>
     </label>
   {{ else if .Page.Content }}
     <a href="{{ .Page.Permalink }}" class="{{ if $current }} active{{ end }}">

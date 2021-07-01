@@ -1,9 +1,19 @@
 'use strict';
 
-{{ $searchDataFile := printf "%s.search-data.js" .Language.Lang }}
-{{ $searchData := resources.Get "search-data.js" | resources.ExecuteAsTemplate $searchDataFile . | resources.Minify | resources.Fingerprint }}
+{{ $searchDataFile := printf "%s.search-data.json" .Language.Lang }}
+{{ $searchData := resources.Get "search-data.json" | resources.ExecuteAsTemplate $searchDataFile . | resources.Minify | resources.Fingerprint }}
+{{ $searchConfig := i18n "bookSearchConfig" | default "{}" }}
 
 (function () {
+  const searchDataURL = '{{ $searchData.RelPermalink }}';
+  const indexConfig = Object.assign({{ $searchConfig }}, {
+    doc: {
+      id: 'id',
+      field: ['title', 'content'],
+      store: ['title', 'href', 'section']
+    }
+  });
+
   const input = document.querySelector('#book-search-input');
   const results = document.querySelector('#book-search-results');
 
@@ -35,7 +45,7 @@
 
   /**
    * @param {String} character
-   * @returns {Boolean}
+   * @returns {Boolean} 
    */
   function isHotkey(character) {
     const dataHotkeys = input.getAttribute('data-hotkeys') || '';
@@ -46,11 +56,14 @@
     input.removeEventListener('focus', init); // init once
     input.required = true;
 
-    loadScript('{{ "flexsearch.min.js" | absURL }}');
-    loadScript('{{ $searchData.Permalink }}', function () {
-      input.required = false;
-      search();
-    });
+    fetch(searchDataURL)
+      .then(pages => pages.json())
+      .then(pages => {
+        window.bookSearchIndex = FlexSearch.create('balance', indexConfig);
+        window.bookSearchIndex.add(pages);
+      })
+      .then(() => input.required = false)
+      .then(search);
   }
 
   function search() {
@@ -73,20 +86,6 @@
 
       results.appendChild(li);
     });
-  }
-
-  /**
-   * @param {String} src
-   * @param {Function} callback
-   */
-  function loadScript(src, callback) {
-    const script = document.createElement('script');
-    script.defer = true;
-    script.async = false;
-    script.src = src;
-    script.onload = callback;
-
-    document.head.appendChild(script);
   }
 
   /**
